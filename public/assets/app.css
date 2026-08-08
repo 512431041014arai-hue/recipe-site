@@ -52,6 +52,78 @@ h2 { font-size: 17px; margin: 24px 0 8px; }
 .muted { color: var(--muted); font-size: 14px; }
 .status { color: var(--muted); padding: 24px 0; }
 
+/* ---- ingredient picker ---- */
+.picker { margin-bottom: 8px; }
+.selected-area {
+  background: var(--accent-weak);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+.selected-area .chip-remove {
+  background: none;
+  border: none;
+  font: inherit;
+  color: var(--accent);
+  cursor: pointer;
+  padding: 2px 4px;
+  margin-right: 4px;
+}
+.link-btn {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 2px 4px;
+  text-decoration: underline;
+}
+.controls {
+  display: flex;
+  gap: 8px 20px;
+  flex-wrap: wrap;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+.modes { display: flex; gap: 14px; }
+.controls label { cursor: pointer; }
+.pantry.disabled { color: #aaa; cursor: default; }
+.search { display: block; margin-bottom: 10px; }
+.search input {
+  width: 100%;
+  font: inherit;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  font: inherit;
+  font-size: 14px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 5px 12px;
+  cursor: pointer;
+  color: var(--fg);
+}
+.chip .count { color: var(--muted); font-size: 12px; margin-left: 4px; }
+.chip[aria-pressed="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.chip[aria-pressed="true"] .count { color: #d7ece0; }
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
 /* ---- recipe cards ---- */
 .card-list {
   list-style: none;

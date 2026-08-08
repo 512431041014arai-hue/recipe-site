@@ -19,6 +19,34 @@
 </header>
 
 <main class="wrap">
+  <section id="picker" class="picker" hidden>
+    <h2>材料から探す</h2>
+
+    <div id="selected-area" class="selected-area" hidden>
+      <span class="muted">選択：</span>
+      <span id="selected-chips"></span>
+      <button type="button" id="clear-all" class="link-btn">全解除</button>
+    </div>
+
+    <div class="controls">
+      <div class="modes" role="radiogroup" aria-label="マッチモード">
+        <label><input type="radio" name="mode" value="or" checked> いずれか含む</label>
+        <label><input type="radio" name="mode" value="subset"> これだけで作れる</label>
+      </div>
+      <label id="pantry-label" class="pantry">
+        <input type="checkbox" id="pantry" checked> 基本調味料は自動で含む
+      </label>
+    </div>
+
+    <label class="search">
+      <span class="visually-hidden">タイトルで絞り込み</span>
+      <input type="search" id="search" placeholder="タイトルで絞り込み">
+    </label>
+
+    <div id="chips" class="chips"></div>
+    <button type="button" id="more-chips" class="link-btn" hidden>…もっと見る</button>
+  </section>
+
   <h2 id="list-heading">レシピ一覧</h2>
   <p id="status" class="status">読み込み中…</p>
   <ul id="card-list" class="card-list"></ul>
