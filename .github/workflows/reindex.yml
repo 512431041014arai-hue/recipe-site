@@ -1,0 +1,38 @@
+name: reindex
+
+# レシピJSONを手で追加/編集したときに index.json を作り直す保険。
+# index.json だけの変更では発火しないので、自分のコミットで無限ループしない。
+on:
+  push:
+    branches: [main]
+    paths:
+      - "public/data/recipes/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  reindex:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Rebuild index.json
+        run: node scripts/reindex.mjs
+
+      - name: Commit if changed
+        run: |
+          if [ -n "$(git status --porcelain public/data/index.json)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add public/data/index.json
+            git commit -m "chore: reindex index.json"
+            git push
+          else
+            echo "index.json は最新です"
+          fi
