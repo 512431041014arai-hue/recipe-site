@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>レシピを追加</title>
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <p class="site-title"><a href="index.html">じすいレシピ</a></p>
+    <nav class="site-nav">
+      <a href="index.html">レシピ一覧</a>
+      <a href="index.html#picker">材料から探す</a>
+      <a href="add.html">＋追加</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <h1 class="detail-title">レシピを追加</h1>
+
+  <details id="settings" class="settings">
+    <summary>GitHub 設定（初回のみ）</summary>
+    <p class="muted note">
+      トークンは<strong>このブラウザ（localStorage）にだけ</strong>保存されます。共有PCでは使わないでください。
+      Fine-grained PAT を、このリポジトリだけに絞り、権限は Contents: Read and write のみで発行してください。
+    </p>
+    <div class="field">
+      <label for="cfg-owner">オーナー（ユーザー名/Organization）</label>
+      <input id="cfg-owner" type="text" autocomplete="off" placeholder="your-name">
+    </div>
+    <div class="field">
+      <label for="cfg-repo">リポジトリ名</label>
+      <input id="cfg-repo" type="text" autocomplete="off" placeholder="recipe-site">
+    </div>
+    <div class="field">
+      <label for="cfg-branch">ブランチ</label>
+      <input id="cfg-branch" type="text" autocomplete="off" value="main">
+    </div>
+    <div class="field">
+      <label for="cfg-token">アクセストークン</label>
+      <input id="cfg-token" type="password" autocomplete="off" placeholder="github_pat_...">
+    </div>
+    <div class="row-actions">
+      <button type="button" id="cfg-save" class="btn">設定を保存</button>
+      <button type="button" id="cfg-clear" class="link-btn">トークンを削除</button>
+      <span id="cfg-status" class="muted"></span>
+    </div>
+  </details>
+
+  <form id="recipe-form" novalidate>
+    <div class="field">
+      <label for="f-title">タイトル <span class="req">必須</span></label>
+      <input id="f-title" type="text" required placeholder="簡単10分 牛丼">
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="f-time">所要時間（分）</label>
+        <input id="f-time" type="number" min="1" step="1" inputmode="numeric" value="10">
+      </div>
+      <div class="field">
+        <label for="f-servings">人数</label>
+        <input id="f-servings" type="number" min="1" step="1" inputmode="numeric" value="1">
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="f-image">サムネイル画像（任意）</label>
+      <input id="f-image" type="file" accept="image/*">
+      <p id="image-info" class="muted"></p>
+    </div>
+
+    <fieldset class="field">
+      <legend>材料 <span class="req">必須</span></legend>
+      <div id="ing-rows"></div>
+      <button type="button" id="add-ing" class="link-btn">＋材料を追加</button>
+    </fieldset>
+
+    <fieldset class="field">
+      <legend>手順 <span class="req">必須</span></legend>
+      <div id="step-rows"></div>
+      <button type="button" id="add-step" class="link-btn">＋手順を追加</button>
+    </fieldset>
+
+    <div class="field">
+      <label for="f-tags">タグ（カンマ区切り）</label>
+      <input id="f-tags" type="text" placeholder="丼, 時短">
+    </div>
+
+    <div class="field">
+      <label for="f-source">元記事URL（任意）</label>
+      <input id="f-source" type="url" inputmode="url" placeholder="https://note.com/...">
+    </div>
+
+    <div class="field">
+      <label for="f-notes">メモ（任意）</label>
+      <textarea id="f-notes" rows="3"></textarea>
+    </div>
+
+    <div class="row-actions">
+      <button type="button" id="btn-preview" class="btn btn-plain">プレビュー</button>
+      <button type="submit" id="btn-submit" class="btn">投稿する</button>
+    </div>
+  </form>
+
+  <p id="form-error" class="form-error" hidden></p>
+
+  <section id="progress-area" hidden>
+    <h2>投稿の進捗</h2>
+    <ol id="progress" class="progress"></ol>
+    <div class="row-actions">
+      <button type="button" id="btn-retry" class="btn" hidden>失敗したところから再実行</button>
+    </div>
+    <p id="result" class="result" hidden></p>
+  </section>
+
+  <section id="preview-area" hidden>
+    <h2>プレビュー</h2>
+    <article id="preview"></article>
+  </section>
+</main>
+
+<script src="assets/recipe.js"></script>
+<script src="assets/add.js"></script>
+</body>
+</html>
