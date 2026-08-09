@@ -1,35 +1,28 @@
 #!/usr/bin/env node
 /**
  * public/data/recipes/*.json を全走査して public/data/index.json を再生成する。
- * 依存なし。リポジトリのどこから実行してもよい（パスはこのファイル基準）。
+ * タグが語彙（public/assets/tags.js）にあるかも検証する。依存なし。
  *
  *   node scripts/reindex.mjs
  */
 import { readdir, readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
+import { TAG_GROUPS, findTag } from "../public/assets/tags.js";
 
 const RECIPES_DIR = fileURLToPath(new URL("../public/data/recipes/", import.meta.url));
 const INDEX_FILE = fileURLToPath(new URL("../public/data/index.json", import.meta.url));
 
-/** 材料名の正規化（assets/app.js / assets/add.js と同一ロジック） */
-function normalizeIngredient(name) {
-  return (name ?? "")
-    .normalize("NFKC")
-    .replace(/[（(].*?[)）]/g, "")
-    .replace(/\s+/g, "")
-    .trim();
-}
-
 function toIndexRow(recipe) {
-  return {
+  const row = {
     id: recipe.id,
     title: recipe.title,
     thumb: recipe.thumb ?? null,
     timeMinutes: recipe.timeMinutes ?? null,
-    ing: [...new Set((recipe.ingredients ?? []).map((x) => normalizeIngredient(x.name)))].filter(Boolean),
-    tags: recipe.tags ?? [],
     createdAt: recipe.createdAt ?? "",
   };
+  // タグはグループごとにそのまま持たせる（一覧・材料から探すで使う）
+  for (const group of TAG_GROUPS) row[group.key] = recipe[group.key] ?? [];
+  return row;
 }
 
 /** createdAt 降順、同日は id 昇順 */
@@ -58,6 +51,16 @@ async function main() {
       problems.push(`${file}: id "${recipe.id}" とファイル名が一致しません`);
     }
     if (!recipe.title) problems.push(`${file}: title がありません`);
+
+    // 語彙にないタグはタイプミスなので弾く（タグ自体は0個でよい）
+    for (const group of TAG_GROUPS) {
+      for (const name of recipe[group.key] ?? []) {
+        if (!findTag(group.key, name)) {
+          problems.push(`${file}: ${group.key} の "${name}" は tags.js にありません`);
+        }
+      }
+    }
+
     rows.push(toIndexRow(recipe));
   }
 

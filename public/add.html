@@ -3,17 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>レシピを追加</title>
+<meta name="robots" content="noindex, nofollow">
+<title>レシピを追加 | 自炊の本棚</title>
 <link rel="stylesheet" href="assets/app.css">
 </head>
 <body>
 <header class="site-header">
   <div class="wrap">
-    <p class="site-title"><a href="index.html">じすいレシピ</a></p>
+    <p class="site-title"><a href="index.html">自炊の本棚</a></p>
     <nav class="site-nav">
-      <a href="index.html">レシピ一覧</a>
-      <a href="index.html#picker">材料から探す</a>
-      <a href="add.html">＋追加</a>
+      <a class="nav-btn" href="index.html">レシピ一覧</a>
+      <a class="nav-btn" href="search.html">材料から探す</a>
     </nav>
   </div>
 </header>
@@ -85,10 +85,11 @@
       <button type="button" id="add-step" class="link-btn">＋手順を追加</button>
     </fieldset>
 
-    <div class="field">
-      <label for="f-tags">タグ（カンマ区切り）</label>
-      <input id="f-tags" type="text" placeholder="丼, 時短">
-    </div>
+    <fieldset class="field">
+      <legend>タグ（任意・いくつでも／0個でも可）</legend>
+      <p class="muted note">「材料から探す」で使われます。使った素材と味の系統を選んでください。</p>
+      <div id="tag-groups"></div>
+    </fieldset>
 
     <div class="field">
       <label for="f-source">元記事URL（任意）</label>
@@ -123,7 +124,6 @@
   </section>
 </main>
 
-<script src="assets/recipe.js"></script>
-<script src="assets/add.js"></script>
+<script type="module" src="assets/add.js"></script>
 </body>
 </html>

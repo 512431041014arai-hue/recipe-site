@@ -1,17 +1,12 @@
-/* 投稿フォーム → GitHub Contents API 直コミット（フェーズ3） */
+/* 投稿フォーム → GitHub Contents API 直コミット */
+
+import { byNewest, el } from "./common.js";
+import { renderRecipe } from "./recipe.js";
+import { TAG_GROUPS } from "./tags.js";
 
 const TOKEN_KEY = "gh_token";
 const CONFIG_KEY = "gh_config";
 const REPO_PREFIX = "public/"; // GitHub Pages の公開ルートがリポジトリ内のどこか
-
-/** 材料名の正規化（app.js / reindex.mjs と同一ロジック） */
-function normalizeIngredient(name) {
-  return (name ?? "")
-    .normalize("NFKC")
-    .replace(/[（(].*?[)）]/g, "")
-    .replace(/\s+/g, "")
-    .trim();
-}
 
 /* ---------- 設定（localStorage） ---------- */
 
@@ -72,12 +67,11 @@ function initSettings() {
 /* ---------- 動的な材料／手順の行 ---------- */
 
 function ingredientRow(name = "", amount = "") {
-  const row = el("div", { class: "dyn-row" }, [
+  return el("div", { class: "dyn-row" }, [
     el("input", { type: "text", class: "ing-name", placeholder: "材料名（例：玉ねぎ）", value: name }),
     el("input", { type: "text", class: "amount-input ing-amount", placeholder: "分量", value: amount }),
     el("button", { type: "button", class: "row-remove", "aria-label": "この材料を削除", text: "✕" }),
   ]);
-  return row;
 }
 
 function stepRow(text = "") {
@@ -118,6 +112,59 @@ function initRows() {
   }
 }
 
+/* ---------- タグ選択 ---------- */
+
+/** groupKey -> Set(タグ名) */
+const selectedTags = new Map(TAG_GROUPS.map((g) => [g.key, new Set()]));
+
+function initTags() {
+  const box = document.getElementById("tag-groups");
+  box.replaceChildren(
+    ...TAG_GROUPS.map((group) =>
+      el("section", { class: "tag-group" }, [
+        el("h3", { class: "tag-group-title", text: group.label }),
+        el(
+          "div",
+          { class: "chips" },
+          group.tags.map((tag) =>
+            el(
+              "button",
+              {
+                type: "button",
+                class: "chip chip-tag",
+                "aria-pressed": "false",
+                "data-group": group.key,
+                "data-name": tag.name,
+              },
+              [
+                el("span", { class: "tag-icon-wrap", html: tag.icon, "aria-hidden": "true" }),
+                el("span", { class: "chip-label", text: tag.name }),
+              ]
+            )
+          )
+        ),
+      ])
+    )
+  );
+
+  box.addEventListener("click", (e) => {
+    const btn = e.target.closest(".chip-tag");
+    if (!btn) return;
+    const set = selectedTags.get(btn.dataset.group);
+    const name = btn.dataset.name;
+    if (set.has(name)) set.delete(name);
+    else set.add(name);
+    btn.setAttribute("aria-pressed", set.has(name) ? "true" : "false");
+  });
+}
+
+function clearTags() {
+  for (const set of selectedTags.values()) set.clear();
+  for (const btn of document.querySelectorAll(".chip-tag")) {
+    btn.setAttribute("aria-pressed", "false");
+  }
+}
+
 /* ---------- フォーム収集・検証 ---------- */
 
 function todayISO() {
@@ -140,25 +187,24 @@ function collectForm() {
     .map((i) => i.value.trim())
     .filter(Boolean);
 
-  const tags = val("f-tags")
-    .split(/[,、]/)
-    .map((t) => t.trim())
-    .filter(Boolean);
-
   const time = parseInt(val("f-time"), 10);
   const servings = parseInt(val("f-servings"), 10);
 
-  return {
+  const form = {
     title: val("f-title"),
     timeMinutes: Number.isFinite(time) && time > 0 ? time : null,
     servings: Number.isFinite(servings) && servings > 0 ? servings : 1,
     ingredients,
     steps,
-    tags,
     sourceUrl: val("f-source") || null,
     createdAt: todayISO(),
     notes: val("f-notes"),
   };
+  // タグはグループごとに配列で持たせる（0個でもキーは残す）
+  for (const group of TAG_GROUPS) {
+    form[group.key] = [...selectedTags.get(group.key)];
+  }
+  return form;
 }
 
 function validate(form) {
@@ -254,8 +300,7 @@ async function shrinkImage(file) {
   const canvas = document.createElement("canvas");
   canvas.width = w;
   canvas.height = h;
-  const ctx = canvas.getContext("2d");
-  ctx.drawImage(bitmap, 0, 0, w, h);
+  canvas.getContext("2d").drawImage(bitmap, 0, 0, w, h);
   bitmap.close?.();
 
   let blob = null;
@@ -329,11 +374,9 @@ async function putFile(cfg, { path, contentBase64, message, sha }) {
 
 /* ---------- 進捗表示 ---------- */
 
-const progressEl = () => document.getElementById("progress");
-
 function renderProgress(steps) {
   document.getElementById("progress-area").hidden = false;
-  progressEl().replaceChildren(
+  document.getElementById("progress").replaceChildren(
     ...steps.map((s) =>
       el("li", { class: s.state }, [
         document.createTextNode(s.label),
@@ -364,20 +407,15 @@ function buildJob(form) {
 }
 
 function indexRow(recipe) {
-  return {
+  const row = {
     id: recipe.id,
     title: recipe.title,
     thumb: recipe.thumb,
     timeMinutes: recipe.timeMinutes,
-    ing: [...new Set(recipe.ingredients.map((x) => normalizeIngredient(x.name)))].filter(Boolean),
-    tags: recipe.tags,
     createdAt: recipe.createdAt,
   };
-}
-
-function byNewest(a, b) {
-  if (a.createdAt !== b.createdAt) return a.createdAt < b.createdAt ? 1 : -1;
-  return a.id.localeCompare(b.id);
+  for (const group of TAG_GROUPS) row[group.key] = recipe[group.key] ?? [];
+  return row;
 }
 
 const RUNNERS = {
@@ -415,7 +453,9 @@ const RUNNERS = {
       servings: f.servings,
       ingredients: f.ingredients,
       steps: f.steps,
-      tags: f.tags,
+      protein: f.protein,
+      plant: f.plant,
+      genre: f.genre,
       sourceUrl: f.sourceUrl,
       createdAt: f.createdAt,
       notes: f.notes,
@@ -493,6 +533,7 @@ async function runJob() {
   document.getElementById("ing-rows").replaceChildren(ingredientRow(), ingredientRow(), ingredientRow());
   document.getElementById("step-rows").replaceChildren(stepRow(), stepRow(), stepRow());
   document.getElementById("image-info").textContent = "";
+  clearTags();
   job = null;
 }
 
@@ -526,5 +567,6 @@ function initForm() {
 
 initSettings();
 initRows();
+initTags();
 initImageField();
 initForm();

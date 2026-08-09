@@ -3,55 +3,31 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>レシピ一覧</title>
+<title>自炊の本棚</title>
 <link rel="stylesheet" href="assets/app.css">
 </head>
 <body>
 <header class="site-header">
   <div class="wrap">
-    <p class="site-title"><a href="index.html">じすいレシピ</a></p>
+    <p class="site-title"><a href="index.html">自炊の本棚</a></p>
     <nav class="site-nav">
-      <a href="index.html">レシピ一覧</a>
-      <a href="index.html#picker">材料から探す</a>
-      <a href="add.html">＋追加</a>
+      <a class="nav-btn is-current" href="index.html" aria-current="page">レシピ一覧</a>
+      <a class="nav-btn" href="search.html">材料から探す</a>
     </nav>
   </div>
 </header>
 
 <main class="wrap">
-  <section id="picker" class="picker" hidden>
-    <h2>材料から探す</h2>
-
-    <div id="selected-area" class="selected-area" hidden>
-      <span class="muted">選択：</span>
-      <span id="selected-chips"></span>
-      <button type="button" id="clear-all" class="link-btn">全解除</button>
-    </div>
-
-    <div class="controls">
-      <div class="modes" role="radiogroup" aria-label="マッチモード">
-        <label><input type="radio" name="mode" value="or" checked> いずれか含む</label>
-        <label><input type="radio" name="mode" value="subset"> これだけで作れる</label>
-      </div>
-      <label id="pantry-label" class="pantry">
-        <input type="checkbox" id="pantry" checked> 基本調味料は自動で含む
-      </label>
-    </div>
-
-    <label class="search">
-      <span class="visually-hidden">タイトルで絞り込み</span>
-      <input type="search" id="search" placeholder="タイトルで絞り込み">
-    </label>
-
-    <div id="chips" class="chips"></div>
-    <button type="button" id="more-chips" class="link-btn" hidden>…もっと見る</button>
-  </section>
+  <label class="search">
+    <span class="visually-hidden">タイトルで検索</span>
+    <input type="search" id="search" placeholder="タイトルで検索" autocomplete="off">
+  </label>
 
   <h2 id="list-heading">レシピ一覧</h2>
   <p id="status" class="status">読み込み中…</p>
   <ul id="card-list" class="card-list"></ul>
 </main>
 
-<script src="assets/app.js"></script>
+<script type="module" src="assets/app.js"></script>
 </body>
 </html>

@@ -5,12 +5,30 @@
   "timeMinutes": 10,
   "servings": 1,
   "ingredients": [
-    { "name": "牛こま肉", "amount": "150g" },
-    { "name": "玉ねぎ", "amount": "1/2個" },
-    { "name": "ごはん", "amount": "丼1杯" },
-    { "name": "醤油", "amount": "大さじ2" },
-    { "name": "砂糖", "amount": "大さじ1" },
-    { "name": "酒", "amount": "大さじ2" }
+    {
+      "name": "牛こま肉",
+      "amount": "150g"
+    },
+    {
+      "name": "玉ねぎ",
+      "amount": "1/2個"
+    },
+    {
+      "name": "ごはん",
+      "amount": "丼1杯"
+    },
+    {
+      "name": "醤油",
+      "amount": "大さじ2"
+    },
+    {
+      "name": "砂糖",
+      "amount": "大さじ1"
+    },
+    {
+      "name": "酒",
+      "amount": "大さじ2"
+    }
   ],
   "steps": [
     "玉ねぎを薄切りにする。",
@@ -18,7 +36,15 @@
     "牛肉をほぐしながら加え、火が通るまで4分煮る。",
     "ごはんにのせて完成。"
   ],
-  "tags": ["丼", "時短"],
+  "protein": [
+    "牛肉"
+  ],
+  "plant": [
+    "玉ねぎ"
+  ],
+  "genre": [
+    "和風"
+  ],
   "sourceUrl": null,
   "createdAt": "2026-08-06",
   "notes": "煮汁は少なめが好み。紅生姜があるとよい。"

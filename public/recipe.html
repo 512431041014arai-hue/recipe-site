@@ -3,17 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>レシピ</title>
+<title>レシピ | 自炊の本棚</title>
 <link rel="stylesheet" href="assets/app.css">
 </head>
 <body>
 <header class="site-header">
   <div class="wrap">
-    <p class="site-title"><a href="index.html">じすいレシピ</a></p>
+    <p class="site-title"><a href="index.html">自炊の本棚</a></p>
     <nav class="site-nav">
-      <a href="index.html">レシピ一覧</a>
-      <a href="index.html#picker">材料から探す</a>
-      <a href="add.html">＋追加</a>
+      <a class="nav-btn" href="index.html">レシピ一覧</a>
+      <a class="nav-btn" href="search.html">材料から探す</a>
     </nav>
   </div>
 </header>
@@ -21,9 +20,9 @@
 <main class="wrap">
   <p id="status" class="status">読み込み中…</p>
   <article id="recipe" hidden></article>
-  <a class="back-link" href="index.html#picker">← 材料から探す</a>
+  <a class="back-link" href="search.html">← 材料から探す</a>
 </main>
 
-<script src="assets/recipe.js"></script>
+<script type="module" src="assets/recipe.js"></script>
 </body>
 </html>

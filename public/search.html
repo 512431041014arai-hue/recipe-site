@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>材料から探す | 自炊の本棚</title>
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <p class="site-title"><a href="index.html">自炊の本棚</a></p>
+    <nav class="site-nav">
+      <a class="nav-btn" href="index.html">レシピ一覧</a>
+      <a class="nav-btn is-current" href="search.html" aria-current="page">材料から探す</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div id="selected-area" class="selected-area" hidden>
+    <span class="muted">選択：</span>
+    <span id="selected-chips"></span>
+    <button type="button" id="clear-all" class="link-btn">全解除</button>
+  </div>
+
+  <div id="groups"></div>
+
+  <div class="controls">
+    <div class="modes" role="radiogroup" aria-label="絞り込み方">
+      <label><input type="radio" name="mode" value="or" checked> いずれか使う</label>
+      <label><input type="radio" name="mode" value="subset"> これだけで作れる</label>
+    </div>
+  </div>
+
+  <h2 id="list-heading">レシピ</h2>
+  <p id="status" class="status">読み込み中…</p>
+  <ul id="card-list" class="card-list"></ul>
+</main>
+
+<script type="module" src="assets/search.js"></script>
+</body>
+</html>

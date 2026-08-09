@@ -1,21 +1,34 @@
-/* 詳細表示（フェーズ1） */
+/* レシピ詳細。add.html のプレビューからも renderRecipe を使う。 */
 
-function el(tag, props = {}, children = []) {
-  const node = document.createElement(tag);
-  for (const [k, v] of Object.entries(props)) {
-    if (v === null || v === undefined) continue;
-    if (k === "class") node.className = v;
-    else if (k === "text") node.textContent = v;
-    else node.setAttribute(k, v);
+import { el } from "./common.js";
+import { TAG_GROUPS, findTag } from "./tags.js";
+
+/** タグをグループごとにイラスト付きで並べる */
+function tagSection(recipe) {
+  const rows = [];
+  for (const group of TAG_GROUPS) {
+    const names = (recipe[group.key] ?? []).filter((n) => findTag(group.key, n));
+    if (!names.length) continue;
+    rows.push(
+      el("div", { class: "tag-row" }, [
+        el("span", { class: "tag-row-label", text: group.label }),
+        el(
+          "span",
+          { class: "tag-row-items" },
+          names.map((name) =>
+            el("span", { class: "tag-pill" }, [
+              el("span", { class: "tag-icon-wrap", html: findTag(group.key, name).icon, "aria-hidden": "true" }),
+              el("span", { text: name }),
+            ])
+          )
+        ),
+      ])
+    );
   }
-  for (const child of [].concat(children)) {
-    if (child) node.appendChild(child);
-  }
-  return node;
+  return rows.length ? el("div", { class: "tag-rows" }, rows) : null;
 }
 
-/** レシピ1件を <article> に描画する。add.html のプレビューからも使う。 */
-function renderRecipe(r, root) {
+export function renderRecipe(r, root) {
   const nodes = [];
 
   if (r.thumb) {
@@ -31,9 +44,7 @@ function renderRecipe(r, root) {
     ])
   );
 
-  if (r.tags && r.tags.length) {
-    nodes.push(el("ul", { class: "taglist" }, r.tags.map((t) => el("li", { text: `#${t}` }))));
-  }
+  nodes.push(tagSection(r));
 
   nodes.push(el("h2", { text: "材料" }));
   const rows = (r.ingredients ?? []).map((ing) =>
@@ -55,12 +66,17 @@ function renderRecipe(r, root) {
   if (r.sourceUrl) {
     nodes.push(
       el("p", {}, [
-        el("a", { href: r.sourceUrl, target: "_blank", rel: "noopener noreferrer", text: "元記事を見る →" }),
+        el("a", {
+          href: r.sourceUrl,
+          target: "_blank",
+          rel: "noopener noreferrer",
+          text: "元記事を見る →",
+        }),
       ])
     );
   }
 
-  root.replaceChildren(...nodes);
+  root.replaceChildren(...nodes.filter(Boolean));
   root.hidden = false;
 }
 
@@ -84,7 +100,7 @@ async function main() {
     if (!res.ok) throw new Error("not found");
     const recipe = await res.json();
     status.hidden = true;
-    document.title = `${recipe.title} | じすいレシピ`;
+    document.title = `${recipe.title} | 自炊の本棚`;
     renderRecipe(recipe, root);
   } catch {
     status.textContent = "見つかりませんでした。";
