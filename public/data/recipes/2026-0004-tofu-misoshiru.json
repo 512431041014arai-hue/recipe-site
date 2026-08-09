@@ -1,0 +1,22 @@
+{
+  "id": "2026-0004-tofu-misoshiru",
+  "title": "5分の豆腐の味噌汁",
+  "thumb": null,
+  "timeMinutes": 5,
+  "servings": 2,
+  "ingredients": [
+    { "name": "豆腐（絹）", "amount": "1/2丁" },
+    { "name": "乾燥わかめ", "amount": "ひとつまみ" },
+    { "name": "味噌", "amount": "大さじ1.5" },
+    { "name": "水", "amount": "400ml" }
+  ],
+  "steps": [
+    "鍋に水を沸かし、乾燥わかめを入れる。",
+    "豆腐をさいの目に切って加え、温まるまで1分。",
+    "火を止めて味噌を溶く。"
+  ],
+  "tags": ["汁物", "時短"],
+  "sourceUrl": null,
+  "createdAt": "2026-08-09",
+  "notes": "index.json は意図的に触らず、Actionに直させる。"
+}
