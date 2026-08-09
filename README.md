@@ -31,15 +31,16 @@ public/
   data/index.json     全レシピの軽量インデックス
   data/recipes/*.json レシピ本体
   data/images/*.jpg   サムネイル
-scripts/reindex.mjs             index.json 再生成（Node, 依存なし）
-.github/workflows/reindex.yml   同上を push 時に自動実行
+scripts/reindex.mjs          index.json 再生成（Node, 依存なし）
+.github/workflows/site.yml   push時に index.json を再生成してから public/ を公開
 ```
 
 ## 公開の手順（GitHub Pages）
 
 1. GitHub に **public** リポジトリを作り、このディレクトリを push する。
 2. Settings → Pages → Build and deployment の Source を **GitHub Actions** にする。
-3. `main` に push すると [`pages.yml`](.github/workflows/pages.yml) が `public/` をそのまま配信する。
+3. `main` に push すると [`site.yml`](.github/workflows/site.yml) が
+   `index.json` を再生成してから `public/` をそのまま配信する。
    数十秒後に `https://<owner>.github.io/<repo>/` で開ける。
 
 > Pages の「Deploy from a branch」はフォルダに `/` か `/docs` しか選べず、`/public` を
@@ -80,8 +81,8 @@ scripts/reindex.mjs             index.json 再生成（Node, 依存なし）
 ### B. 手でJSONを置く
 
 `public/data/recipes/<id>.json` を追加して push すれば OK。
-GitHub Actions（`reindex.yml`）が `index.json` を作り直してコミットするので、
-インデックスを手で直す必要はありません。
+GitHub Actions（`site.yml`）が `index.json` を作り直してコミットし、
+そのまま公開まで済ませるので、インデックスを手で直す必要はありません。
 
 手元で作り直したいときは:
 

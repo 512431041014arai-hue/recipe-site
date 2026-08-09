@@ -1,0 +1,59 @@
+name: site
+
+# index.json の再生成 → public/ の公開 を1つの実行でまとめて行う。
+#
+# 分けない理由: GITHUB_TOKEN による push は新しいワークフロー実行を起こさないため、
+# reindex が index.json をコミットしても、それだけでは Pages が再デプロイされない。
+# 同じ実行の中で再生成→デプロイまでやれば、手でレシピJSONを足しただけでも公開に反映される。
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # レシピJSONを手で追加/編集した場合の保険。壊れたJSONがあればここで失敗する。
+      - name: Rebuild index.json
+        run: node scripts/reindex.mjs
+
+      - name: Commit index.json if changed
+        run: |
+          if [ -n "$(git status --porcelain public/data/index.json)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add public/data/index.json
+            git commit -m "chore: reindex index.json"
+            git push
+          else
+            echo "index.json は最新です"
+          fi
+
+      # 再生成後の public/ をそのまま配信する（ビルドはしない）
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
