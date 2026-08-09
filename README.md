@@ -38,9 +38,15 @@ scripts/reindex.mjs             index.json 再生成（Node, 依存なし）
 ## 公開の手順（GitHub Pages）
 
 1. GitHub に **public** リポジトリを作り、このディレクトリを push する。
-2. Settings → Pages → Build and deployment を **Deploy from a branch** にし、
-   Branch を `main` / フォルダを **`/public`** に設定する。
-3. 数十秒後に `https://<owner>.github.io/<repo>/` で開ける。
+2. Settings → Pages → Build and deployment の Source を **GitHub Actions** にする。
+3. `main` に push すると [`pages.yml`](.github/workflows/pages.yml) が `public/` をそのまま配信する。
+   数十秒後に `https://<owner>.github.io/<repo>/` で開ける。
+
+> Pages の「Deploy from a branch」はフォルダに `/` か `/docs` しか選べず、`/public` を
+> 指定できません。仕様どおり `public/` を公開ルートにするため、ビルドをしない
+> アップロードだけの Actions ワークフローで配信しています。
+> （`public/` を `docs/` にリネームすれば Actions なしの構成にもできます。その場合は
+> `assets/add.js` の `REPO_PREFIX` と各ワークフローの `paths` も直してください。）
 
 ## レシピを追加する
 
