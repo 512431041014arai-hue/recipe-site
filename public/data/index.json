@@ -1,19 +1,5 @@
 [
   {
-    "id": "2026-0004-mc82",
-    "title": "テスト 目玉焼き",
-    "thumb": "data/images/2026-0004-mc82.jpg",
-    "timeMinutes": 10,
-    "createdAt": "2026-08-09",
-    "protein": [
-      "卵"
-    ],
-    "plant": [],
-    "genre": [
-      "和風"
-    ]
-  },
-  {
     "id": "2026-0003-oyakodon",
     "title": "フライパンひとつで親子丼",
     "thumb": null,
