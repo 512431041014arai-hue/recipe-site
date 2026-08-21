@@ -100,7 +100,7 @@ async function main() {
     if (!res.ok) throw new Error("not found");
     const recipe = await res.json();
     status.hidden = true;
-    document.title = `${recipe.title} | 自炊ハックの本棚`;
+    document.title = `${recipe.title} | 自炊の本棚`;
     renderRecipe(recipe, root);
   } catch {
     status.textContent = "見つかりませんでした。";
